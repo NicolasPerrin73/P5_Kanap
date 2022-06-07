@@ -38,6 +38,10 @@ function currentProduct(product) {
   }
 }
 
+function addProductInfo(products) {
+  globalThis.productsArray = products;
+}
+
 // API call return promise, when fulffiled, call currentPoduct function
 fetch(`http://localhost:3000/api/products/${id}`)
   .then(function (res) {
@@ -47,6 +51,7 @@ fetch(`http://localhost:3000/api/products/${id}`)
   })
   .then(function (product) {
     currentProduct(product);
+    addProductInfo(product);
   })
   .catch(function (err) {
     console.log("Erreur" + err);
@@ -62,12 +67,15 @@ function addToCard() {
     let colorInput = document.getElementById("colors");
     let colorSelected = colorInput.options[colorInput.selectedIndex].value;
     let quantityInput = parseInt(quantityInputValue, 10);
-    let productImage = product.imageUrl;
     // create an objet of this product
     let article = {
       id: id,
       color: colorSelected,
       quantity: quantityInput,
+      image: productsArray.imageUrl,
+      imageTxt: productsArray.altTxt,
+      name: productsArray.name,
+      price: productsArray.price,
     };
 
     //If product is already in cart
