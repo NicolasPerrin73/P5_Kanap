@@ -38,7 +38,7 @@ function currentProduct(product) {
   }
 }
 
-// API call return promise, when fulffiled call currentPoduct function
+// API call return promise, when fulffiled, call currentPoduct function
 fetch(`http://localhost:3000/api/products/${id}`)
   .then(function (res) {
     if (res.ok) {
@@ -62,6 +62,7 @@ function addToCard() {
     let colorInput = document.getElementById("colors");
     let colorSelected = colorInput.options[colorInput.selectedIndex].value;
     let quantityInput = parseInt(quantityInputValue, 10);
+    let productImage = product.imageUrl;
     // create an objet of this product
     let article = {
       id: id,
@@ -69,8 +70,12 @@ function addToCard() {
       quantity: quantityInput,
     };
 
-    //If product is already in card
-    if (cart.length == 0) {
+    //If product is already in cart
+    if (article.color == "" && article.quantity == 0) {
+      alert("Merci de sélectionner une couleur, ainsi que la quantité");
+    } else if (article.color == "") {
+      alert("Merci de choisir une couleur");
+    } else if (cart.length == 0) {
       cart.push(article);
     } else if (cart.length >= 1) {
       const testColor = cart.find((test) => test.color == article.color);
