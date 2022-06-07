@@ -2,11 +2,11 @@
 let url = window.location.href;
 let u = new URL(url);
 let id = u.searchParams.get("id");
+// Get class .item__img
 let itemImg = document.querySelector(".item__img");
 
 /**
  *DOM modification with current product
- *
  * @param {*} product
  */
 function currentProduct(product) {
@@ -53,47 +53,57 @@ fetch(`http://localhost:3000/api/products/${id}`)
   });
 
 /**
- *
- *
+ * When click on 'Ajouter au panier' button, add item to LocalStorage
  */
 function addToCard() {
   document.querySelector("#addToCart").addEventListener("click", function () {
-    // Get color and quantity
+    // Get color and quantity of current product
     let quantityInputValue = document.querySelector("#quantity").value;
     let colorInput = document.getElementById("colors");
     let colorSelected = colorInput.options[colorInput.selectedIndex].value;
     let quantityInput = parseInt(quantityInputValue, 10);
-    // create an objet of this
+    // create an objet of this product
     let article = {
       id: id,
       color: colorSelected,
       quantity: quantityInput,
     };
 
-    if (panier.length == 0) {
-      panier.push(article);
-    } else if (panier.length >= 1) {
-      const testColor = panier.find((test) => test.color == article.color);
-      console.log(testColor);
-      const testId = panier.find((test2) => test2.id == article.id);
-      console.log(testId);
+    //If product is already in card
+    if (cart.length == 0) {
+      cart.push(article);
+    } else if (cart.length >= 1) {
+      const testColor = cart.find((test) => test.color == article.color);
+      const testId = cart.find((test2) => test2.id == article.id);
       if (testId == undefined || testColor == undefined) {
-        panier.push(article);
+        cart.push(article);
       } else if (testId != undefined && testColor != undefined) {
         testColor.quantity += article.quantity;
       }
     }
-
-    console.log(panier);
+    //See the cart in console
+    console.log(cart);
+    // Stringify object of cart
+    let cartLinea = JSON.stringify(cart);
+    // Add cart to LocaleStorage
+    localStorage.setItem("card", cartLinea);
   });
 }
-let panier = [];
-addToCard();
 
-/* LORSQU'ON clique sur ajouter au panier
-    Si l'artile n'est pas présent dans le panier
-    ALORS on ajoute l'article au panier
-    Sinon si la couleur et l'article sont présent
-    ALORS on incremente sa quantite
-    Sinon si l'article est déjà present
-    Alors on ne l'ajoute pas */
+// Get card in string chain
+let LSlinea = localStorage.getItem("card");
+// Convert string chain in Objet
+let cartJson = JSON.parse(LSlinea);
+
+/**
+ *Create the card array with LocaleStorage
+ */
+function createCard() {}
+if (localStorage.length != 0) {
+  window.cart = cartJson;
+} else {
+  window.cart = [];
+}
+
+createCard();
+addToCard();
