@@ -59,9 +59,10 @@ fetch(`http://localhost:3000/api/products/${id}`)
 function addToCard() {
   document.querySelector("#addToCart").addEventListener("click", function () {
     // Get color and quantity
-    let quantityInput = document.querySelector("#quantity").value;
+    let quantityInputValue = document.querySelector("#quantity").value;
     let colorInput = document.getElementById("colors");
     let colorSelected = colorInput.options[colorInput.selectedIndex].value;
+    let quantityInput = parseInt(quantityInputValue, 10);
     // create an objet of this
     let article = {
       id: id,
@@ -69,7 +70,20 @@ function addToCard() {
       quantity: quantityInput,
     };
 
-    panier.push(article);
+    if (panier.length == 0) {
+      panier.push(article);
+    } else if (panier.length >= 1) {
+      const testColor = panier.find((test) => test.color == article.color);
+      console.log(testColor);
+      const testId = panier.find((test2) => test2.id == article.id);
+      console.log(testId);
+      if (testId == undefined || testColor == undefined) {
+        panier.push(article);
+      } else if (testId != undefined && testColor != undefined) {
+        testColor.quantity += article.quantity;
+      }
+    }
+
     console.log(panier);
   });
 }
