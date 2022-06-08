@@ -46,9 +46,21 @@ function displayCart() {
     pColor.textContent = cart[i].color;
     cartItemContentDescription.appendChild(pColor);
     //Create product price
-    let pPrice = document.createElement("p");
-    pPrice.textContent = cart[i].price + "€";
-    cartItemContentDescription.appendChild(pPrice);
+    fetch(`http://localhost:3000/api/products/${cart[i].id}`)
+      .then(function (res) {
+        if (res.ok) {
+          return res.json();
+        }
+      })
+      .then(function (product) {
+        let pPrice = document.createElement("p");
+        pPrice.textContent = product.price + "€";
+        cartItemContentDescription.appendChild(pPrice);
+      })
+      .catch(function (err) {
+        console.log("Erreur" + err);
+      });
+    /**/
     // Create cart item content settings
     let cartItemContentSettings = document.createElement("div");
     cartItemContentSettings.classList.add("cart__item__content__settings");
@@ -106,14 +118,13 @@ function totalQuantity() {
 
 totalQuantity();
 
+// Initialize price Array
+let priceArray = [];
+
 /**
- * Calculate total price of products and display it
+ * Calculate the total price of product in cart and display it
  */
-function totalPrice() {
-  let priceArray = [];
-  for (i = 0; i < cart.length; i++) {
-    priceArray.push(cart[i].price * cart[i].quantity);
-  }
+function calculateTotalPrice() {
   const initialValue = 0;
   const total = priceArray.reduce(
     (previousValue, currentValue) => previousValue + currentValue,
@@ -123,4 +134,27 @@ function totalPrice() {
   spanTotalPrice.textContent = total;
 }
 
-totalPrice();
+/**
+ * Get price of each product from API, push it and multiply it with quantity
+ * on price Array, then call calculateTotalPrice function
+ */
+async function getTotalPrice() {
+  for (i = 0; i < cart.length; i++) {
+    await fetch(`http://localhost:3000/api/products/${cart[i].id}`)
+      .then(function (res) {
+        if (res.ok) {
+          return res.json();
+        }
+      })
+      .then(function (product) {
+        priceArray.push(product.price * cart[i].quantity);
+        calculateTotalPrice();
+        console.log(priceArray);
+      })
+      .catch(function (err) {
+        console.log("Erreur" + err);
+      });
+  }
+}
+
+getTotalPrice();

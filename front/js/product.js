@@ -75,7 +75,6 @@ function addToCard() {
       image: productsArray.imageUrl,
       imageTxt: productsArray.altTxt,
       name: productsArray.name,
-      price: productsArray.price,
     };
 
     //If product is already in cart
