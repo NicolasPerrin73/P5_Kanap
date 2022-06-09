@@ -30,4 +30,4 @@ fetch("http://localhost:3000/api/products")
     console.log("Erreur" + err);
   });
 
-console.log(localStorage);
+console.log("current local Storage: ", localStorage);

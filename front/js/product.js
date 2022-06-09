@@ -94,7 +94,7 @@ function addToCard() {
       }
     }
     //See the cart in console
-    console.log(cart);
+    console.log("current cart: ", cart);
     // Stringify object of cart
     let cartLinea = JSON.stringify(cart);
     // Add cart to LocaleStorage
@@ -118,4 +118,5 @@ if (localStorage.length != 0) {
 }
 
 createCard();
+console.log("current cart: ", cart);
 addToCard();

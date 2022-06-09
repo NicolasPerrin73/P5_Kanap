@@ -1,10 +1,12 @@
-console.log(localStorage);
+console.log("current local Storage: ", localStorage);
 // Get card in string chain
 let LSlinea = localStorage.getItem("card");
 // Convert string chain in Objet
 let cart = JSON.parse(LSlinea);
 // See cart in console
-console.log(cart);
+console.log("current cart: ", cart);
+
+let cartItems = document.querySelector("#cart__items");
 
 /**
  * Display each item in cart on page
@@ -14,7 +16,6 @@ function displayCart() {
   for (i = 0; i < cart.length; i++) {
     // Create article
     let cardItem = document.createElement("article");
-    let cartItems = document.querySelector("#cart__items");
     cardItem.classList.add("cart__item");
     cardItem.dataset.id = `${cart[i].id}`;
     cardItem.dataset.color = `${cart[i].color}`;
@@ -97,7 +98,81 @@ function displayCart() {
   }
 }
 
-displayCart();
+// No error in console if cart is empty
+if (cart != null) {
+  displayCart();
+}
+
+/**
+ * Calculate total quantity of products and display it
+ */
+function totalQuantity() {
+  let cartQtyArray = [];
+  for (i = 0; i < cart.length; i++) {
+    cartQtyArray.push(cart[i].quantity);
+  }
+  const initialValue = 0;
+  const total = cartQtyArray.reduce(
+    (previousValue, currentValue) => previousValue + currentValue,
+    initialValue
+  );
+  let spanTotalQuantity = document.querySelector("#totalQuantity");
+  spanTotalQuantity.textContent = total;
+}
+
+// Display 0 article if cart is emply, else call totalQuantity function
+if (cart == null) {
+  let spanTotalQuantity = document.querySelector("#totalQuantity");
+  spanTotalQuantity.textContent = "0";
+} else {
+  totalQuantity();
+}
+
+// Initialize price Array
+let priceArray = [];
+
+/**
+ * Calculate the total price of product in cart and display it
+ */
+function calculateTotalPrice() {
+  const initialValue = 0;
+  const total = priceArray.reduce(
+    (previousValue, currentValue) => previousValue + currentValue,
+    initialValue
+  );
+  let spanTotalPrice = document.querySelector("#totalPrice");
+  spanTotalPrice.textContent = total;
+}
+
+/**
+ * Get price of each product from API, push it and multiply it with quantity
+ * on price Array, then call calculateTotalPrice function
+ */
+async function getTotalPrice() {
+  if (cart == null || cart.length == 0) {
+    let spanTotalPrice = document.querySelector("#totalPrice");
+    spanTotalPrice.textContent = "0";
+  } else {
+    for (i = 0; i < cart.length; i++) {
+      await fetch(`http://localhost:3000/api/products/${cart[i].id}`)
+        .then(function (res) {
+          if (res.ok) {
+            return res.json();
+          }
+        })
+        .then(function (product) {
+          priceArray.push(product.price * cart[i].quantity);
+          calculateTotalPrice();
+        })
+        .catch(function (err) {
+          console.log("Erreur: " + err);
+        });
+    }
+  }
+  console.log("price Array: ", priceArray);
+}
+
+getTotalPrice();
 
 /**
  * Listen quantity changes of each product, add it to localStorage and recalculate total
@@ -136,61 +211,40 @@ function getQuantityChange() {
 getQuantityChange();
 
 /**
- * Calculate total quantity of products and display it
+ * Listen click on "Supprimer" text of each product,
+ * remove the product of cart, local storage and
+ * call functions to display cart
  */
-function totalQuantity() {
-  let cartQtyArray = [];
-  for (i = 0; i < cart.length; i++) {
-    cartQtyArray.push(cart[i].quantity);
-  }
-  const initialValue = 0;
-  const total = cartQtyArray.reduce(
-    (previousValue, currentValue) => previousValue + currentValue,
-    initialValue
-  );
-  let spanTotalQuantity = document.querySelector("#totalQuantity");
-  spanTotalQuantity.textContent = total;
+function deleteItem() {
+  // Add all delete text in Array
+  let allDeleteText = document.querySelectorAll(".deleteItem");
+  // For each text of Array listen click
+  allDeleteText.forEach(function (text) {
+    text.addEventListener("click", function () {
+      // Get the id and color of product
+      let textElement = text.closest("article");
+      let dataId = textElement.dataset.id;
+      let color = textElement.dataset.color;
+      // Set the cart without deleted product
+      cart = cart.filter((item) => item.id != dataId || item.color != color);
+      // Add it to local Storage
+      let cartLinea = JSON.stringify(cart);
+      localStorage.setItem("card", cartLinea);
+      // Reset the cart display
+      cartItems.innerHTML = "";
+      // Call functions to display current cart
+      displayCart();
+      totalQuantity();
+      priceArray = [];
+      getTotalPrice();
+      getQuantityChange();
+      // Recursive function
+      deleteItem();
+      // See cart changes in console
+      console.log("cart after deleted product: ", cart);
+      console.log("local storage after deleted product: ", localStorage);
+    });
+  });
 }
 
-totalQuantity();
-
-// Initialize price Array
-let priceArray = [];
-
-/**
- * Calculate the total price of product in cart and display it
- */
-function calculateTotalPrice() {
-  const initialValue = 0;
-  const total = priceArray.reduce(
-    (previousValue, currentValue) => previousValue + currentValue,
-    initialValue
-  );
-  let spanTotalPrice = document.querySelector("#totalPrice");
-  spanTotalPrice.textContent = total;
-}
-
-/**
- * Get price of each product from API, push it and multiply it with quantity
- * on price Array, then call calculateTotalPrice function
- */
-async function getTotalPrice() {
-  for (i = 0; i < cart.length; i++) {
-    await fetch(`http://localhost:3000/api/products/${cart[i].id}`)
-      .then(function (res) {
-        if (res.ok) {
-          return res.json();
-        }
-      })
-      .then(function (product) {
-        priceArray.push(product.price * cart[i].quantity);
-        calculateTotalPrice();
-      })
-      .catch(function (err) {
-        console.log("Erreur: " + err);
-      });
-  }
-  console.log(priceArray);
-}
-
-getTotalPrice();
+deleteItem();
