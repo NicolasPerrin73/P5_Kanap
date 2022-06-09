@@ -58,7 +58,7 @@ function displayCart() {
         cartItemContentDescription.appendChild(pPrice);
       })
       .catch(function (err) {
-        console.log("Erreur" + err);
+        console.log("Erreur: " + err);
       });
     /**/
     // Create cart item content settings
@@ -98,6 +98,42 @@ function displayCart() {
 }
 
 displayCart();
+
+/**
+ * Listen quantity changes of each product, add it to localStorage and recalculate total
+ * price and quantity
+ */
+function getQuantityChange() {
+  // Add all input in Array
+  let allQuantityInput = document.querySelectorAll(".itemQuantity");
+  // For each input of Array listen changes
+  allQuantityInput.forEach(function (input) {
+    input.addEventListener("change", function () {
+      // Get the id and color of the input
+      let inputElement = input.closest("article");
+      let dataId = inputElement.dataset.id;
+      let color = inputElement.dataset.color;
+      // Get the quantity value in number type of the input
+      let quantityInputValue = input.value;
+      let quantityInput = parseInt(quantityInputValue, 10);
+      // Find the same product in cart to modify the quantity
+      const testColor = cart.find((test) => test.color == color);
+      const testId = cart.find((test2) => test2.id == dataId);
+      if (testId != undefined && testColor != undefined) {
+        testColor.quantity = quantityInput;
+      }
+      // Put the cart in LocalStorage
+      let cartLinea = JSON.stringify(cart);
+      localStorage.setItem("card", cartLinea);
+      // Call the function to calculate and display
+      totalQuantity();
+      priceArray = [];
+      getTotalPrice();
+    });
+  });
+}
+
+getQuantityChange();
 
 /**
  * Calculate total quantity of products and display it
@@ -149,12 +185,12 @@ async function getTotalPrice() {
       .then(function (product) {
         priceArray.push(product.price * cart[i].quantity);
         calculateTotalPrice();
-        console.log(priceArray);
       })
       .catch(function (err) {
-        console.log("Erreur" + err);
+        console.log("Erreur: " + err);
       });
   }
+  console.log(priceArray);
 }
 
 getTotalPrice();
