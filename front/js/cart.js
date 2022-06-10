@@ -1,3 +1,5 @@
+/***************** CART SECTION *****************/
+
 console.log("current local Storage: ", localStorage);
 // Get card in string chain
 let LSlinea = localStorage.getItem("card");
@@ -248,3 +250,73 @@ function deleteItem() {
 }
 
 deleteItem();
+
+/***************** FORM SECTION *****************/
+
+let firstNameInput = document.querySelector("#firstName");
+
+let lastNameInput = document.querySelector("#lastName");
+
+let addressInput = document.querySelector("#address");
+
+let citytInput = document.querySelector("#city");
+
+let emailInput = document.querySelector("#email");
+
+let RegExpName = /[0-9&"{}()[\]\|`_^@=+\$%µ\*!§:\/;.,\?<>~]/;
+let RegExpAdress = /[&"{}()[\]\|`_^@=+\$%µ\*!§:\/;.,\?<>~]/;
+
+function validFirstName() {
+  firstNameInput.addEventListener("change", function () {
+    let testName = RegExpName.test(firstNameInput.value);
+    if (testName == true) {
+      firstNameErrorMsg.textContent =
+        "Prénom invalide, ne doit pas contenir de chiffre ou de caractères spéciaux";
+    } else {
+      firstNameErrorMsg.textContent = "";
+    }
+  });
+}
+validFirstName();
+
+function validLastName() {
+  lastNameInput.addEventListener("change", function () {
+    let testName = RegExpName.test(lastNameInput.value);
+    if (testName == true) {
+      lastNameErrorMsg.textContent =
+        "Nom invalide, ne doit pas contenir de chiffre ou de caractères spéciaux";
+    } else {
+      lastNameErrorMsg.textContent = "";
+    }
+  });
+}
+
+validLastName();
+
+function validAdress() {
+  addressInput.addEventListener("change", function () {
+    let testName = RegExpAdress.test(addressInput.value);
+    if (testName == true) {
+      addressErrorMsg.textContent =
+        "Adress invalide, ne doit pas de caractères spéciaux";
+    } else {
+      addressErrorMsg.textContent = "";
+    }
+  });
+}
+
+validAdress();
+
+function validCity() {
+  citytInput.addEventListener("change", function () {
+    let testName = RegExpName.test(citytInput.value);
+    if (testName == true) {
+      cityErrorMsg.textContent =
+        "Ville invalide, ne doit pas contenir de chiffre ou de caractères spéciaux";
+    } else {
+      cityErrorMsg.textContent = "";
+    }
+  });
+}
+
+validCity();

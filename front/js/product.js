@@ -82,13 +82,18 @@ function addToCard() {
       alert("Merci de sélectionner une couleur, ainsi que la quantité");
     } else if (article.color == "") {
       alert("Merci de choisir une couleur");
+    } else if (article.quantity == 0) {
+      alert("Merci d'indiquer une quantité");
     } else if (cart.length == 0) {
       cart.push(article);
     } else if (cart.length >= 1) {
       const testColor = cart.find((test) => test.color == article.color);
       const testId = cart.find((test2) => test2.id == article.id);
-      if (testId == undefined || testColor == undefined) {
+      if (testId == undefined && testColor == undefined) {
         cart.push(article);
+      } else if (testId != undefined && testColor == undefined) {
+        let index = cart.indexOf(testId) + 1;
+        cart.splice(index, 0, article);
       } else if (testId != undefined && testColor != undefined) {
         testColor.quantity += article.quantity;
       }
