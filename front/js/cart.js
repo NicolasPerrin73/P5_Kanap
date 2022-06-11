@@ -254,69 +254,185 @@ deleteItem();
 /***************** FORM SECTION *****************/
 
 let firstNameInput = document.querySelector("#firstName");
+let firstNameErrorMsg = document.querySelector("#firstNameErrorMsg");
 
 let lastNameInput = document.querySelector("#lastName");
+let lastNameErrorMsg = document.querySelector("#lastNameErrorMsg");
 
 let addressInput = document.querySelector("#address");
+let addressErrorMsg = document.querySelector("#addressErrorMsg");
 
 let citytInput = document.querySelector("#city");
+let cityErrorMsg = document.querySelector("#cityErrorMsg");
 
 let emailInput = document.querySelector("#email");
+let emailErrorMsg = document.querySelector("#emailErrorMsg");
 
-let RegExpName = /[0-9&"{}()[\]\|`_^@=+\$%µ\*!§:\/;.,\?<>~]/;
-let RegExpAdress = /[&"{}()[\]\|`_^@=+\$%µ\*!§:\/;.,\?<>~]/;
+let RegExpName = /^((?![0-9&"{}()[\]\|`_^@=+\$%µ\*!§:\/;.,\?<>~]).)*$/;
+let RegExpAdress = /^((?![&"{}()[\]\|`_^@=+\$%µ\*!§:\/;.,\?<>~]).)*$/;
+let RegExpEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+
+let testFirstName = false;
+let testLastName = false;
+let testAddress = false;
+let testCity = false;
+let testEmail = false;
+
+let formValid = false;
 
 function validFirstName() {
   firstNameInput.addEventListener("change", function () {
-    let testName = RegExpName.test(firstNameInput.value);
-    if (testName == true) {
+    testFirstName = RegExpName.test(firstNameInput.value);
+    if (firstNameInput.value == "") {
+      testFirstName = false;
+    } else if (testFirstName == false) {
       firstNameErrorMsg.textContent =
         "Prénom invalide, ne doit pas contenir de chiffre ou de caractères spéciaux";
-    } else {
+    } else if (testFirstName == true) {
       firstNameErrorMsg.textContent = "";
     }
   });
 }
-validFirstName();
 
 function validLastName() {
   lastNameInput.addEventListener("change", function () {
-    let testName = RegExpName.test(lastNameInput.value);
-    if (testName == true) {
+    testLastName = RegExpName.test(lastNameInput.value);
+    if (lastNameInput.value == "") {
+      testLastName = false;
+    } else if (testLastName == false) {
       lastNameErrorMsg.textContent =
         "Nom invalide, ne doit pas contenir de chiffre ou de caractères spéciaux";
-    } else {
+    } else if (testLastName == true) {
       lastNameErrorMsg.textContent = "";
     }
   });
 }
 
-validLastName();
-
 function validAdress() {
   addressInput.addEventListener("change", function () {
-    let testName = RegExpAdress.test(addressInput.value);
-    if (testName == true) {
+    testAddress = RegExpAdress.test(addressInput.value);
+    if (addressInput.value == "") {
+      testAddress = false;
+    } else if (testAddress == false) {
       addressErrorMsg.textContent =
         "Adress invalide, ne doit pas de caractères spéciaux";
-    } else {
+    } else if (testAddress == true) {
       addressErrorMsg.textContent = "";
     }
   });
 }
 
-validAdress();
-
 function validCity() {
   citytInput.addEventListener("change", function () {
-    let testName = RegExpName.test(citytInput.value);
-    if (testName == true) {
+    testCity = RegExpName.test(citytInput.value);
+    if (citytInput.value == "") {
+      testCity = false;
+    } else if (testCity == false) {
       cityErrorMsg.textContent =
         "Ville invalide, ne doit pas contenir de chiffre ou de caractères spéciaux";
-    } else {
+    } else if (testCity == true) {
       cityErrorMsg.textContent = "";
     }
   });
 }
 
+function validEmail() {
+  emailInput.addEventListener("input", function () {
+    testEmail = RegExpEmail.test(emailInput.value);
+    if (emailInput.value == "") {
+      testEmail = false;
+      emailErrorMsg.textContent = "";
+    } else if (testEmail == false) {
+      emailErrorMsg.textContent = "Email invalide";
+    } else if (testEmail == true) {
+      emailErrorMsg.textContent = "";
+    }
+  });
+}
+
+validFirstName();
+validLastName();
+validAdress();
 validCity();
+validEmail();
+
+let order = document.querySelector("#order");
+
+function validForm() {
+  if (
+    testFirstName === true &&
+    testLastName === true &&
+    testAddress === true &&
+    testCity === true &&
+    testEmail === true
+  ) {
+    formValid = true;
+  } else {
+    formValid = false;
+  }
+}
+
+let contact;
+
+function getContactInformation() {
+  contact = {
+    firstName: firstNameInput.value,
+    lastName: lastNameInput.value,
+    address: addressInput.value,
+    city: citytInput.value,
+    email: emailInput.value,
+  };
+}
+
+let productId = [];
+
+function getProductIDArray() {
+  productId = [];
+  for (i = 0; i < cart.length; i++) {
+    productId.push(cart[i].id);
+  }
+}
+
+
+
+function getOrder() {
+  order.addEventListener("click", function (e) {
+    e.preventDefault();
+    validForm();
+    if (formValid == true) {
+      getContactInformation();
+      getProductIDArray();
+      console.log(contact);
+      console.log(productId);
+      let orderInformation = {
+        'contact' : contact,
+        'products': productId
+      }
+      console.log(orderInformation)
+
+      fetch("http://localhost:3000/api/products/order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderInformation)
+      })
+        .then(function (res) {
+          if (res.ok) {
+            return res.json();
+          }
+        })
+        .then(function (data) {
+          console.log(data);
+          location.href = "/front/html/confirmation.html"
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
+    } else if (formValid == false) {
+      console.log("form not ok");
+    }
+  });
+}
+
+getOrder();
