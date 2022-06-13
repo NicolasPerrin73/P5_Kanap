@@ -393,8 +393,6 @@ function getProductIDArray() {
   }
 }
 
-
-
 function getOrder() {
   order.addEventListener("click", function (e) {
     e.preventDefault();
@@ -405,17 +403,17 @@ function getOrder() {
       console.log(contact);
       console.log(productId);
       let orderInformation = {
-        'contact' : contact,
-        'products': productId
-      }
-      console.log(orderInformation)
+        contact: contact,
+        products: productId,
+      };
+      console.log(orderInformation);
 
       fetch("http://localhost:3000/api/products/order", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(orderInformation)
+        body: JSON.stringify(orderInformation),
       })
         .then(function (res) {
           if (res.ok) {
@@ -423,8 +421,8 @@ function getOrder() {
           }
         })
         .then(function (data) {
-          console.log(data);
-          location.href = "/front/html/confirmation.html"
+          console.log(data.orderId);
+          location.href = `/front/html/confirmation.html?orderId=${data.orderId}`;
         })
         .catch(function (err) {
           console.log(err);
