@@ -171,7 +171,6 @@ async function getTotalPrice() {
         });
     }
   }
-  console.log("price Array: ", priceArray);
 }
 
 getTotalPrice();
@@ -206,6 +205,7 @@ function getQuantityChange() {
       totalQuantity();
       priceArray = [];
       getTotalPrice();
+      console.log("current cart: ", cart)
     });
   });
 }
@@ -243,8 +243,8 @@ function deleteItem() {
       // Recursive function
       deleteItem();
       // See cart changes in console
-      console.log("cart after deleted product: ", cart);
-      console.log("local storage after deleted product: ", localStorage);
+      console.log("current cart: ", cart);
+
     });
   });
 }
@@ -444,7 +444,6 @@ function getOrder() {
         contact: contact,
         products: productId,
       };
-      console.log(orderInformation);
 
       fetch("http://localhost:3000/api/products/order", {
         method: "POST",
@@ -466,9 +465,9 @@ function getOrder() {
           console.log(err);
         });
     } else if (formValid == false) {
-      console.log("form not ok");
+      alert("Le formulaire n'est pas valide")
     } else if (cart.length == 0){
-      console.log('empty cart')
+      alert("Le panier est vide")
     }
   });
 }
