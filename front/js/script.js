@@ -1,7 +1,11 @@
+// Get items section from DOM
 const items = document.getElementById("items");
 
-// Function to add item
-const createItem = function (products) {
+/**
+ * Display products on page
+ * @param {*} products
+ */
+function createItem(products) {
   for (let i = 0; i < products.length; i++) {
     const item = document.createElement("a");
 
@@ -15,8 +19,9 @@ const createItem = function (products) {
 
     items.appendChild(item);
   }
-};
-// API call function
+}
+
+// API promise call function
 fetch("http://localhost:3000/api/products")
   .then(function (res) {
     if (res.ok) {
@@ -30,4 +35,5 @@ fetch("http://localhost:3000/api/products")
     console.log("Erreur" + err);
   });
 
+//See local Storage in console
 console.log("current local Storage: ", localStorage);

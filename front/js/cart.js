@@ -205,7 +205,7 @@ function getQuantityChange() {
       totalQuantity();
       priceArray = [];
       getTotalPrice();
-      console.log("current cart: ", cart)
+      console.log("current cart: ", cart);
     });
   });
 }
@@ -244,7 +244,6 @@ function deleteItem() {
       deleteItem();
       // See cart changes in console
       console.log("current cart: ", cart);
-
     });
   });
 }
@@ -379,7 +378,6 @@ validEmail();
 // Get the "Commander!" button
 let order = document.querySelector("#order");
 
-
 /**
  * Change the boolean variable formValid if all inputs passed RegExp rules
  */
@@ -459,15 +457,15 @@ function getOrder() {
         })
         .then(function (data) {
           console.log(data.orderId);
-          location.href = `/front/html/confirmation.html?orderId=${data.orderId}`;
+          location.href = `./confirmation.html?orderId=${data.orderId}`;
         })
         .catch(function (err) {
           console.log(err);
         });
     } else if (formValid == false) {
-      alert("Le formulaire n'est pas valide")
-    } else if (cart.length == 0){
-      alert("Le panier est vide")
+      alert("Le formulaire n'est pas valide");
+    } else if (cart.length == 0) {
+      alert("Le panier est vide");
     }
   });
 }
