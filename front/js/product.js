@@ -4,12 +4,19 @@ let u = new URL(url);
 let id = u.searchParams.get("id");
 // Get class .item__img
 let itemImg = document.querySelector(".item__img");
+// Declare an array for product information
+let productInfo = [];
+//Declare a variable for cart
+let cart;
 
 /**
  *DOM modification with current product
  * @param {*} product
  */
-function currentProduct(product) {
+function displayCurrentProduct(product) {
+  // Title of page
+  document.title = product.name;
+
   // Image product
   let img = document.createElement("img");
   img.setAttribute("src", product.imageUrl);
@@ -38,11 +45,7 @@ function currentProduct(product) {
   }
 }
 
-function addProductInfo(products) {
-  globalThis.productsArray = products;
-}
-
-// API call return promise, when fulffiled, call currentPoduct function
+// API call return promise, when fullfiled,add response in product array and call currentPoduct function
 fetch(`http://localhost:3000/api/products/${id}`)
   .then(function (res) {
     if (res.ok) {
@@ -50,12 +53,29 @@ fetch(`http://localhost:3000/api/products/${id}`)
     }
   })
   .then(function (product) {
-    currentProduct(product);
-    addProductInfo(product);
+    productInfo = product;
+    displayCurrentProduct(product);
   })
   .catch(function (err) {
     console.log("Erreur" + err);
   });
+
+// Get card in string chain
+let LSlinea = localStorage.getItem("card");
+// Convert string chain in Objet
+let cartJson = JSON.parse(LSlinea);
+
+/**
+ *Create the card array with LocaleStorage
+ */
+function createCard() {}
+if (localStorage.length != 0) {
+  cart = cartJson;
+} else {
+  cart = [];
+}
+
+createCard();
 
 /**
  * When click on 'Ajouter au panier' button, add item to LocalStorage
@@ -72,9 +92,9 @@ function addToCard() {
       id: id,
       color: colorSelected,
       quantity: quantityInput,
-      image: productsArray.imageUrl,
-      imageTxt: productsArray.altTxt,
-      name: productsArray.name,
+      image: productInfo.imageUrl,
+      imageTxt: productInfo.altTxt,
+      name: productInfo.name,
     };
 
     //If product is already in cart
@@ -87,15 +107,15 @@ function addToCard() {
     } else if (cart.length == 0) {
       cart.push(article);
     } else if (cart.length >= 1) {
-      const testColor = cart.find((test) => test.color == article.color);
-      const testId = cart.find((test2) => test2.id == article.id);
-      if (testId == undefined && testColor == undefined) {
+      const sameColorItem = cart.find((test) => test.color == article.color);
+      const sameIdItem = cart.find((test2) => test2.id == article.id);
+      if (sameIdItem == undefined && sameColorItem == undefined) {
         cart.push(article);
-      } else if (testId != undefined && testColor == undefined) {
-        let index = cart.indexOf(testId) + 1;
+      } else if (sameIdItem != undefined && sameColorItem == undefined) {
+        let index = cart.indexOf(sameIdItem) + 1;
         cart.splice(index, 0, article);
-      } else if (testId != undefined && testColor != undefined) {
-        testColor.quantity += article.quantity;
+      } else if (sameIdItem != undefined && sameColorItem != undefined) {
+        sameColorItem.quantity += article.quantity;
       }
     }
     //See the cart in console
@@ -107,21 +127,5 @@ function addToCard() {
   });
 }
 
-// Get card in string chain
-let LSlinea = localStorage.getItem("card");
-// Convert string chain in Objet
-let cartJson = JSON.parse(LSlinea);
-
-/**
- *Create the card array with LocaleStorage
- */
-function createCard() {}
-if (localStorage.length != 0) {
-  window.cart = cartJson;
-} else {
-  window.cart = [];
-}
-
-createCard();
 console.log("current cart: ", cart);
 addToCard();

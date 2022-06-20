@@ -193,10 +193,10 @@ function getQuantityChange() {
       let quantityInputValue = input.value;
       let quantityInput = parseInt(quantityInputValue, 10);
       // Find the same product in cart to modify the quantity
-      const testColor = cart.find((test) => test.color == color);
-      const testId = cart.find((test2) => test2.id == dataId);
-      if (testId != undefined && testColor != undefined) {
-        testColor.quantity = quantityInput;
+      const sameColorItem = cart.find((test) => test.color == color);
+      const sameIdItem = cart.find((test2) => test2.id == dataId);
+      if (sameIdItem != undefined && sameColorItem != undefined) {
+        sameColorItem.quantity = quantityInput;
       }
       // Put the cart in LocalStorage
       let cartLinea = JSON.stringify(cart);
@@ -436,8 +436,7 @@ function getOrder() {
     if (formValid == true && cart.length >= 1) {
       getContactInformation();
       getProductIDArray();
-      console.log(contact);
-      console.log(productId);
+
       let orderInformation = {
         contact: contact,
         products: productId,
@@ -456,7 +455,6 @@ function getOrder() {
           }
         })
         .then(function (data) {
-          console.log(data.orderId);
           location.href = `./confirmation.html?orderId=${data.orderId}`;
         })
         .catch(function (err) {
