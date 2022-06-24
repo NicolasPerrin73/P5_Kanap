@@ -8,7 +8,7 @@ let cart = JSON.parse(LSlinea);
 // See cart in console
 console.log("current cart: ", cart);
 
-let cartItems = document.querySelector("#cart__items");
+const cartItems = document.querySelector("#cart__items");
 
 /**
  * Display each item in cart on page
@@ -17,35 +17,35 @@ function displayCart() {
   //Create article for each item in cart
   for (i = 0; i < cart.length; i++) {
     // Create article
-    let cardItem = document.createElement("article");
+    const cardItem = document.createElement("article");
     cardItem.classList.add("cart__item");
     cardItem.dataset.id = `${cart[i].id}`;
     cardItem.dataset.color = `${cart[i].color}`;
     cartItems.appendChild(cardItem);
     // Create image
-    let cartItemImg = document.createElement("div");
+    const cartItemImg = document.createElement("div");
     cartItemImg.classList.add("cart__item__img");
     cardItem.appendChild(cartItemImg);
-    let image = document.createElement("img");
+    const image = document.createElement("img");
     image.setAttribute("src", cart[i].image);
     image.setAttribute("alt", cart[i].imageTxt);
     cartItemImg.appendChild(image);
     // Create cart item content
-    let cardItemContent = document.createElement("div");
+    const cardItemContent = document.createElement("div");
     cardItemContent.classList.add("cart__item__content");
     cardItem.appendChild(cardItemContent);
     // Create cart item content description
-    let cartItemContentDescription = document.createElement("div");
+    const cartItemContentDescription = document.createElement("div");
     cartItemContentDescription.classList.add(
       "cart__item__content__description"
     );
     cardItemContent.appendChild(cartItemContentDescription);
     // Create product name
-    let h2 = document.createElement("h2");
+    const h2 = document.createElement("h2");
     h2.textContent = cart[i].name;
     cartItemContentDescription.appendChild(h2);
     // Create product color
-    let pColor = document.createElement("p");
+    const pColor = document.createElement("p");
     pColor.textContent = cart[i].color;
     cartItemContentDescription.appendChild(pColor);
     //Create product price
@@ -56,7 +56,7 @@ function displayCart() {
         }
       })
       .then(function (product) {
-        let pPrice = document.createElement("p");
+        const pPrice = document.createElement("p");
         pPrice.textContent = product.price + "€";
         cartItemContentDescription.appendChild(pPrice);
       })
@@ -65,21 +65,21 @@ function displayCart() {
       });
     /**/
     // Create cart item content settings
-    let cartItemContentSettings = document.createElement("div");
+    const cartItemContentSettings = document.createElement("div");
     cartItemContentSettings.classList.add("cart__item__content__settings");
     cardItemContent.appendChild(cartItemContentSettings);
     //Create cart item content settings quantity
-    let cartItemContentSettingsQuantity = document.createElement("div");
+    const cartItemContentSettingsQuantity = document.createElement("div");
     cartItemContentSettingsQuantity.classList.add(
       "cart__item__content__settings__quantity"
     );
     cartItemContentSettings.appendChild(cartItemContentSettingsQuantity);
     // Create quantity text
-    let pQuantity = document.createElement("p");
+    const pQuantity = document.createElement("p");
     pQuantity.textContent = "Qté : ";
     cartItemContentSettingsQuantity.appendChild(pQuantity);
     // Create quantity input
-    let inputQuantity = document.createElement("input");
+    const inputQuantity = document.createElement("input");
     inputQuantity.classList.add("itemQuantity");
     inputQuantity.setAttribute("type", "number");
     inputQuantity.setAttribute("name", "itemQuantity");
@@ -88,12 +88,12 @@ function displayCart() {
     inputQuantity.setAttribute("value", cart[i].quantity);
     cartItemContentSettingsQuantity.appendChild(inputQuantity);
     // Create delete text
-    let cartItemContentSettingsDelete = document.createElement("div");
+    const cartItemContentSettingsDelete = document.createElement("div");
     cartItemContentSettingsDelete.classList.add(
       "cart__item__content__settings__delete"
     );
     cartItemContentSettings.appendChild(cartItemContentSettingsDelete);
-    let pDelete = document.createElement("p");
+    const pDelete = document.createElement("p");
     pDelete.textContent = "Supprimer";
     pDelete.classList.add("deleteItem");
     cartItemContentSettingsDelete.appendChild(pDelete);
@@ -124,7 +124,7 @@ function totalQuantity() {
 
 // Display 0 article if cart is emply, else call totalQuantity function
 if (cart == null) {
-  let spanTotalQuantity = document.querySelector("#totalQuantity");
+  const spanTotalQuantity = document.querySelector("#totalQuantity");
   spanTotalQuantity.textContent = "0";
 } else {
   totalQuantity();
@@ -142,7 +142,7 @@ function calculateTotalPrice() {
     (previousValue, currentValue) => previousValue + currentValue,
     initialValue
   );
-  let spanTotalPrice = document.querySelector("#totalPrice");
+  const spanTotalPrice = document.querySelector("#totalPrice");
   spanTotalPrice.textContent = total;
 }
 
@@ -152,7 +152,7 @@ function calculateTotalPrice() {
  */
 async function getTotalPrice() {
   if (cart == null || cart.length == 0) {
-    let spanTotalPrice = document.querySelector("#totalPrice");
+    const spanTotalPrice = document.querySelector("#totalPrice");
     spanTotalPrice.textContent = "0";
   } else {
     for (i = 0; i < cart.length; i++) {
@@ -181,14 +181,14 @@ getTotalPrice();
  */
 function getQuantityChange() {
   // Add all input in Array
-  let allQuantityInput = document.querySelectorAll(".itemQuantity");
+  const allQuantityInput = document.querySelectorAll(".itemQuantity");
   // For each input of Array listen changes
   allQuantityInput.forEach(function (input) {
     input.addEventListener("change", function () {
       // Get the id and color of the input
-      let inputElement = input.closest("article");
-      let dataId = inputElement.dataset.id;
-      let color = inputElement.dataset.color;
+      const inputElement = input.closest("article");
+      const dataId = inputElement.dataset.id;
+      const color = inputElement.dataset.color;
       // Get the quantity value in number type of the input
       let quantityInputValue = input.value;
       let quantityInput = parseInt(quantityInputValue, 10);
@@ -199,7 +199,7 @@ function getQuantityChange() {
         sameColorItem.quantity = quantityInput;
       }
       // Put the cart in LocalStorage
-      let cartLinea = JSON.stringify(cart);
+      const cartLinea = JSON.stringify(cart);
       localStorage.setItem("card", cartLinea);
       // Call the function to calculate and display
       totalQuantity();
@@ -219,7 +219,7 @@ getQuantityChange();
  */
 function deleteItem() {
   // Add all delete text in Array
-  let allDeleteText = document.querySelectorAll(".deleteItem");
+  const allDeleteText = document.querySelectorAll(".deleteItem");
   // For each text of Array listen click
   allDeleteText.forEach(function (text) {
     text.addEventListener("click", function () {
@@ -253,27 +253,27 @@ deleteItem();
 /***************** FORM SECTION *****************/
 
 // Get fist name input & error message
-let firstNameInput = document.querySelector("#firstName");
-let firstNameErrorMsg = document.querySelector("#firstNameErrorMsg");
+const firstNameInput = document.querySelector("#firstName");
+const firstNameErrorMsg = document.querySelector("#firstNameErrorMsg");
 // Get last name input & error message
-let lastNameInput = document.querySelector("#lastName");
-let lastNameErrorMsg = document.querySelector("#lastNameErrorMsg");
+const lastNameInput = document.querySelector("#lastName");
+const lastNameErrorMsg = document.querySelector("#lastNameErrorMsg");
 // Get adress input & error message
-let addressInput = document.querySelector("#address");
-let addressErrorMsg = document.querySelector("#addressErrorMsg");
+const addressInput = document.querySelector("#address");
+const addressErrorMsg = document.querySelector("#addressErrorMsg");
 // Get city input & error message
-let citytInput = document.querySelector("#city");
-let cityErrorMsg = document.querySelector("#cityErrorMsg");
+const citytInput = document.querySelector("#city");
+const cityErrorMsg = document.querySelector("#cityErrorMsg");
 // Get email input & error message
-let emailInput = document.querySelector("#email");
-let emailErrorMsg = document.querySelector("#emailErrorMsg");
+const emailInput = document.querySelector("#email");
+const emailErrorMsg = document.querySelector("#emailErrorMsg");
 // Regular expression for form validation
 // Name without number and special characters
-let RegExpName = /^((?![0-9&"{}()[\]\|`_^@=+\$%µ\*!§:\/;.,\?<>~]).)*$/;
+const RegExpName = /^((?![0-9&"{}()[\]\|`_^@=+\$%µ\*!§:\/;.,\?<>~]).)*$/;
 // Adress without special characters
-let RegExpAdress = /^((?![&"{}()[\]\|`_^@=+\$%µ\*!§:\/;.,\?<>~]).)*$/;
+const RegExpAdress = /^((?![&"{}()[\]\|`_^@=+\$%µ\*!§:\/;.,\?<>~]).)*$/;
 // Valid email syntax
-let RegExpEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const RegExpEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 // Variables for RegExp test
 let testFirstName = false;
 let testLastName = false;
@@ -376,7 +376,7 @@ validCity();
 validEmail();
 
 // Get the "Commander!" button
-let order = document.querySelector("#order");
+const order = document.querySelector("#order");
 
 /**
  * Change the boolean variable formValid if all inputs passed RegExp rules

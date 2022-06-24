@@ -1,9 +1,9 @@
 // Use searchParams method for getting the id in url
-let url = window.location.href;
-let u = new URL(url);
-let id = u.searchParams.get("id");
+const url = window.location.href;
+const u = new URL(url);
+const id = u.searchParams.get("id");
 // Get class .item__img
-let itemImg = document.querySelector(".item__img");
+const itemImg = document.querySelector(".item__img");
 // Declare an array for product information
 let productInfo = [];
 //Declare a variable for cart
@@ -18,29 +18,29 @@ function displayCurrentProduct(product) {
   document.title = product.name;
 
   // Image product
-  let img = document.createElement("img");
+  const img = document.createElement("img");
   img.setAttribute("src", product.imageUrl);
   img.setAttribute("alt", product.altTxt);
   itemImg.appendChild(img);
 
   // Product title
-  let title = document.querySelector("#title");
+  const title = document.querySelector("#title");
   title.textContent = `${product.name}`;
 
   //Product price
-  let price = document.querySelector("#price");
+  const price = document.querySelector("#price");
   price.textContent = `${product.price}`;
 
   //Product description
-  let description = document.querySelector("#description");
+  const description = document.querySelector("#description");
   description.textContent = `${product.description}`;
 
   // Product color option
   for (let i = 0; i < product.colors.length; i++) {
-    let option = document.createElement("option");
+    const option = document.createElement("option");
     option.setAttribute("value", product.colors[i]);
     option.textContent = `${product.colors[i]}`;
-    let select = document.querySelector("#colors");
+    const select = document.querySelector("#colors");
     select.appendChild(option);
   }
 }
@@ -61,9 +61,9 @@ fetch(`http://localhost:3000/api/products/${id}`)
   });
 
 // Get card in string chain
-let LSlinea = localStorage.getItem("card");
+const LSlinea = localStorage.getItem("card");
 // Convert string chain in Objet
-let cartJson = JSON.parse(LSlinea);
+const cartJson = JSON.parse(LSlinea);
 
 /**
  *Create the card array with LocaleStorage
@@ -84,7 +84,7 @@ function addToCard() {
   document.querySelector("#addToCart").addEventListener("click", function () {
     // Get color and quantity of current product
     let quantityInputValue = document.querySelector("#quantity").value;
-    let colorInput = document.getElementById("colors");
+    const colorInput = document.getElementById("colors");
     let colorSelected = colorInput.options[colorInput.selectedIndex].value;
     let quantityInput = parseInt(quantityInputValue, 10);
     // create an objet of this product
@@ -121,7 +121,7 @@ function addToCard() {
     //See the cart in console
     console.log("current cart: ", cart);
     // Stringify object of cart
-    let cartLinea = JSON.stringify(cart);
+    const cartLinea = JSON.stringify(cart);
     // Add cart to LocaleStorage
     localStorage.setItem("card", cartLinea);
   });
